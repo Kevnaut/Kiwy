@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -124,6 +125,15 @@ public class MainActivity extends AppCompatActivity {
         mBTDevices = new ArrayList<>();
 
         // All onClick actions
+        lvNewDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Make a new activity and send the device that was selected
+                BluetoothDevice device = mBTDevices.get(i);
+                openAddEntry(device);
+
+            }
+        });
         btnONOFF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -217,5 +227,10 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }
+    }
+
+    public void openAddEntry(BluetoothDevice device) {
+        Intent intent = new Intent(this, AddEntry.class);
+        startActivity(intent);
     }
 }
