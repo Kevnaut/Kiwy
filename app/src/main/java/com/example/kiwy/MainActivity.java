@@ -231,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void openAddEntry(BluetoothDevice device) {
         Intent intent = new Intent(this, AddEntry.class);
+        intent.putExtra("btDeviceName", device.getName());
+        intent.putExtra("btDeviceAddress", device.getAddress());
         startActivity(intent);
     }
 }
