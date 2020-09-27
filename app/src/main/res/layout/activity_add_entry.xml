@@ -57,9 +57,29 @@
         android:id="@+id/btAddDevice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="204dp"
+        android:layout_marginTop="208dp"
         android:text="Save Device"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.841"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btChangeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inName" />
+
+    <EditText
+        android:id="@+id/inName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Insert Name here"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btAddDevice" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
