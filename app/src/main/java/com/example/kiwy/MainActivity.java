@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnEnableDisable_Discoverable;
     Button btnONOFF;
     Button btnDiscoverDevices;
+    Button btnLocateItem;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView lvNewDevices;
@@ -119,12 +120,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Initializing the buttons
         btnONOFF = (Button) findViewById(R.id.btnONOFF);
+        btnLocateItem = (Button) findViewById(R.id.btnLocateItem);
         btnEnableDisable_Discoverable = (Button) findViewById(R.id.btnEnableDisable_Discoverable);
         btnDiscoverDevices = (Button) findViewById(R.id.btnDiscoverDevices);
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
 
         // All onClick actions
+
+        btnLocateItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openLocateItem();
+            }
+        });
+
         lvNewDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -168,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
+                lvNewDevices.setAdapter(null);
+                mBTDevices.clear();
                 Log.d(TAG, "onClick: Looking for unpaird devices");
 
                 if(mBluetoothAdapter.isDiscovering()) {
@@ -188,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                     registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
                 }
+
 
             }
         });
@@ -233,6 +246,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AddEntry.class);
         intent.putExtra("btDeviceName", device.getName());
         intent.putExtra("btDeviceAddress", device.getAddress());
+        startActivity(intent);
+    }
+    public void openLocateItem() {
+        Intent intent = new Intent(this, LocateItem.class);
         startActivity(intent);
     }
 }
