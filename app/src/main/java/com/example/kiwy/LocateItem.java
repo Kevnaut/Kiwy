@@ -17,19 +17,21 @@ public class LocateItem extends AppCompatActivity {
     private TextView tDeviceNameBox;
     private TextView tDistance;
     private Button btFound;
+    //private
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locate_item);
-        //intent = getIntent();
+        Intent intent = getIntent();
 
         tDeviceNameBox = (TextView) findViewById(R.id.tDeviceNameBox);
         tDistance = (TextView) findViewById(R.id.tDistance);
         btFound = (Button) findViewById(R.id.btFound);
+        //btDeviceName = (TextBox)
 
-        tDeviceNameBox.setText(deviceNameHeader + /*intent.getStringExtra("btDeviceName" )*/ "tmp name");
-        setDistanceReadout(5, "meters");
+        tDeviceNameBox.setText(deviceNameHeader + intent.getStringExtra("btDeviceName"));
+        setDistanceReadout(5, "feet");
         btFound.setOnClickListener(new View.OnClickListener(){ //go back to main menu
             @Override
              public void onClick(View view){
