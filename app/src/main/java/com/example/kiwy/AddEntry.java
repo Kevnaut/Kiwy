@@ -1,5 +1,6 @@
 package com.example.kiwy;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,11 @@ public class AddEntry extends AppCompatActivity {
     TextView tAddress;
     EditText inName;
     TextView tvTest;
+    TextView txSignal;
+    TextView txSignalNum;
+
+    //Testing
+    int deviceRssi;
 
     public static final String FILE_NAME = "SavedDevices.csv";
 
@@ -42,13 +48,21 @@ public class AddEntry extends AppCompatActivity {
         btAddDevice = (Button) findViewById(R.id.btAddDevice);
         btChangeName = (Button) findViewById(R.id.btChangeName);
         inName = (EditText) findViewById(R.id.inName);
+        txSignal = (TextView) findViewById(R.id.txSignal);
+        txSignalNum = (TextView) findViewById(R.id.txSignalNum);
+
 
 
         btName = intent.getStringExtra("btDeviceName");
         btAddress = intent.getStringExtra("btDeviceAddress");
 
+        deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+
+
+
         tDevice.setText(btName);
         tAddress.setText(btAddress);
+        txSignalNum.setText("RSSI: " + deviceRssi + " dBm");
 
         btAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override

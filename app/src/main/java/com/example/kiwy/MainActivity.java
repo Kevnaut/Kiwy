@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
             int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+
             permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
             if (permissionCheck != 0) {
 
@@ -244,9 +245,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openAddEntry(BluetoothDevice device) {
+
         Intent intent = new Intent(this, AddEntry.class);
         intent.putExtra("btDeviceName", device.getName());
         intent.putExtra("btDeviceAddress", device.getAddress());
+        intent.putExtra("deviceRSSI", device.EXTRA_RSSI);
         startActivity(intent);
     }
     public void openLocateItem() {
