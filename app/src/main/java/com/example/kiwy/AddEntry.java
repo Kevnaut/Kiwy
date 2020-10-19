@@ -1,6 +1,9 @@
 package com.example.kiwy;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,8 +37,9 @@ public class AddEntry extends AppCompatActivity {
     TextView txSignalNum;
 
     //Testing
-    String deviceRssi;
-    BluetoothDevice device;
+    public BluetoothDevice device;
+    public BluetoothAdapter BTAdapter;
+    private int deviceRssi;
 
     public static final String FILE_NAME = "SavedDevices.csv";
 
@@ -52,22 +56,23 @@ public class AddEntry extends AppCompatActivity {
         txSignal = (TextView) findViewById(R.id.txSignal);
         txSignalNum = (TextView) findViewById(R.id.txSignalNum);
 
-
+        device = getIntent().getExtras().getParcelable("btDevice");
         //deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
 
 
-
-        device = getIntent().getExtras().getParcelable("btDevice");
-
         btName = device.getName();
         btAddress = device.getAddress();
-        deviceRssi = device.EXTRA_RSSI;
 
-        System.out.println("TEST2: " + btName + " " + btAddress + " " + deviceRssi);
+
+        // Initialize a bt adapter so we can get the RSSI
+        BTAdapter = BluetoothAdapter.getDefaultAdapter();
+        // Discover the devices
+        deviceRssi = getRSSI(btName);
+
 
         tDevice.setText(btName);
         tAddress.setText(btAddress);
-        txSignalNum.setText("RSSI: " + deviceRssi + " dBm");
+        //txSignalNum.setText("RSSI: " + deviceRssi + " dBm");
 
         btAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,29 +97,38 @@ public class AddEntry extends AppCompatActivity {
         intent.putExtra("btDeviceName", btName);
         intent.putExtra("btDeviceAddress", btAddress);
         startActivity(intent);
-        /*
-        FileOutputStream fos = null;
 
-        try {
-            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-            fos.write(btName.getBytes());
-            fos.write(btAddress.getBytes());
+    }
 
-            Toast.makeText(this, "Devices saved to " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+    private int getRSSI(final String device){
+        // My idea is if i start discovery here and have a new reciver I can rescan all the available rssi's and do a string comparison to match for the device and send back the desired rssi
+        BTAdapter.startDiscovery();
+
+        System.out.println("TEST1: Name: " + device);
+         final BroadcastReceiver receiver = new BroadcastReceiver() {
+             int rssi = -999;
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                // For some reason it is not findnig action found
+                if(BluetoothDevice.ACTION_FOUND.equals(action)){
+                    String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                    // Some reason this never gets called
+                    System.out.println("TEST2: Name: " + name);
+                    if(name.equals(device)){
+                        rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+
+                    }
+                    System.out.println("TEST3: " + rssi + " name: " + name);
                 }
             }
-        }
-         */
+
+        };
+
+        // Device was not found
+        return -999;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

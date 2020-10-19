@@ -248,20 +248,6 @@ public class MainActivity extends AppCompatActivity {
     public void openAddEntry(BluetoothDevice device) {
         Intent intent = new Intent(this, AddEntry.class);
         intent.putExtra("btDevice", device);
-        int rssi = -999;
-
-        mBluetoothAdapter.startDiscovery();
-
-        //mBroadcastReceiver3.onReceive(this,intent);
-        //String action = intent.getAction();
-        //if(device.ACTION_FOUND.equals(action)){
-
-            System.out.println("TEST5 " + device.getName() + " " + device.getAddress() + " " + rssi );
-            rssi = intent.getShortExtra(device.EXTRA_RSSI,Short.MIN_VALUE);
-        //}
-
-        System.out.println("TEST4 " + device.getName() + " " + device.getAddress() + " " + rssi );
-
         startActivity(intent);
     }
     public void openLocateItem() {
