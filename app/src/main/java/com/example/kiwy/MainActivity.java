@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private final BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
+        private final BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onReceive: ACTION FOUND");
             if(action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
                 mBTDevices.add(device);
                 Log.d(TAG, "onRecive: " + device.getName() + " : " + device.getAddress());
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
@@ -245,11 +246,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openAddEntry(BluetoothDevice device) {
-
         Intent intent = new Intent(this, AddEntry.class);
-        intent.putExtra("btDeviceName", device.getName());
-        intent.putExtra("btDeviceAddress", device.getAddress());
-        intent.putExtra("deviceRSSI", device.EXTRA_RSSI);
+        intent.putExtra("btDevice", device);
+        int rssi = -999;
+
+        mBluetoothAdapter.startDiscovery();
+
+        //mBroadcastReceiver3.onReceive(this,intent);
+        //String action = intent.getAction();
+        //if(device.ACTION_FOUND.equals(action)){
+
+            System.out.println("TEST5 " + device.getName() + " " + device.getAddress() + " " + rssi );
+            rssi = intent.getShortExtra(device.EXTRA_RSSI,Short.MIN_VALUE);
+        //}
+
+        System.out.println("TEST4 " + device.getName() + " " + device.getAddress() + " " + rssi );
+
         startActivity(intent);
     }
     public void openLocateItem() {

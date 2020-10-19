@@ -34,7 +34,8 @@ public class AddEntry extends AppCompatActivity {
     TextView txSignalNum;
 
     //Testing
-    int deviceRssi;
+    String deviceRssi;
+    BluetoothDevice device;
 
     public static final String FILE_NAME = "SavedDevices.csv";
 
@@ -52,13 +53,17 @@ public class AddEntry extends AppCompatActivity {
         txSignalNum = (TextView) findViewById(R.id.txSignalNum);
 
 
-
-        btName = intent.getStringExtra("btDeviceName");
-        btAddress = intent.getStringExtra("btDeviceAddress");
-
-        deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+        //deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
 
 
+
+        device = getIntent().getExtras().getParcelable("btDevice");
+
+        btName = device.getName();
+        btAddress = device.getAddress();
+        deviceRssi = device.EXTRA_RSSI;
+
+        System.out.println("TEST2: " + btName + " " + btAddress + " " + deviceRssi);
 
         tDevice.setText(btName);
         tAddress.setText(btAddress);
