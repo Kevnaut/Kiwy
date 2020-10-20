@@ -156,24 +156,25 @@ public class MainActivity extends AppCompatActivity {
                 } else if (mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_ON){
                     btnONOFF.setText("Turn on Bluetooth");
                 }
-                // TEST?
                 enableDisableBT();
             }
         });
 
+        /*
         btnEnableDisable_Discoverable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: enabling/disabling Discoverability. for 300 seconds");
+                //Log.d(TAG, "onClick: enabling/disabling Discoverability. for 300 seconds");
 
-                Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                startActivity(discoverableIntent);
+                //Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                //discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+                //startActivity(discoverableIntent);
 
-                IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-                registerReceiver(mBroadcastReceiver2, intentFilter);
+                //IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+                //registerReceiver(mBroadcastReceiver2, intentFilter);
             }
         });
+        */
 
         btnDiscoverDevices.setOnClickListener(new View.OnClickListener() {
 
@@ -202,11 +203,8 @@ public class MainActivity extends AppCompatActivity {
                     IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                     registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
                 }
-
-
             }
         });
-
     }
 
     public void enableDisableBT(){
@@ -254,4 +252,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LocateItem.class);
         startActivity(intent);
     }
+
+
 }

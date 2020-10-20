@@ -2,9 +2,8 @@ package com.example.kiwy;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -15,39 +14,36 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 public class AddEntry extends AppCompatActivity {
     String btName;
     String btAddress;
     Button btAddDevice;
     Button btChangeName;
+    Button btnRefresh;
     Intent intent;
 
     TextView tDevice;
     TextView tAddress;
     EditText inName;
-    TextView tvTest;
     TextView txSignal;
     TextView txSignalNum;
 
-    //Testing
-    public BluetoothDevice device;
-    public BluetoothAdapter BTAdapter;
+    private BluetoothDevice device;
+    private BluetoothAdapter adapter;
+    private KiwyBroadcastReceiver receiver;
+
     private int deviceRssi;
 
     public static final String FILE_NAME = "SavedDevices.csv";
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_entry);
         intent = getIntent();
+
+        // Set the buttons
         tDevice = (TextView) findViewById(R.id.tDevice);
         tAddress = (TextView) findViewById(R.id.tAddress);
         btAddDevice = (Button) findViewById(R.id.btAddDevice);
@@ -55,24 +51,23 @@ public class AddEntry extends AppCompatActivity {
         inName = (EditText) findViewById(R.id.inName);
         txSignal = (TextView) findViewById(R.id.txSignal);
         txSignalNum = (TextView) findViewById(R.id.txSignalNum);
+        btnRefresh = (Button) findViewById(R.id.btnRefresh);
 
-        device = getIntent().getExtras().getParcelable("btDevice");
-        //deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-
-
+        // Set up selected Bluetooth device
+        device = intent.getExtras().getParcelable("btDevice");
         btName = device.getName();
         btAddress = device.getAddress();
+        deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+
+        // Set up adapter and reciver to get signal strenth
+        adapter = BluetoothAdapter.getDefaultAdapter();
+        receiver = new KiwyBroadcastReceiver(device);
 
 
-        // Initialize a bt adapter so we can get the RSSI
-        BTAdapter = BluetoothAdapter.getDefaultAdapter();
-        // Discover the devices
-        deviceRssi = getRSSI(btName);
-
-
+        // Set text for selected Bluetooth device
         tDevice.setText(btName);
         tAddress.setText(btAddress);
-        //txSignalNum.setText("RSSI: " + deviceRssi + " dBm");
+        txSignalNum.setText("Refresh");
 
         btAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +85,30 @@ public class AddEntry extends AppCompatActivity {
                 inName.setText("");
             }
         });
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(adapter.isDiscovering()) {
+                    adapter.cancelDiscovery();
+                }
+                if(!adapter.isDiscovering()) {
+                    adapter.startDiscovery();
+                    IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                    registerReceiver(receiver,discoverIntent);
+
+                    txSignalNum.setText( deviceRssi + " dBm");
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     public void save() {
@@ -101,36 +120,7 @@ public class AddEntry extends AppCompatActivity {
     }
 
 
-    private int getRSSI(final String device){
-        // My idea is if i start discovery here and have a new reciver I can rescan all the available rssi's and do a string comparison to match for the device and send back the desired rssi
-        BTAdapter.startDiscovery();
-
-        System.out.println("TEST1: Name: " + device);
-         final BroadcastReceiver receiver = new BroadcastReceiver() {
-             int rssi = -999;
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                // For some reason it is not findnig action found
-                if(BluetoothDevice.ACTION_FOUND.equals(action)){
-                    String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-                    // Some reason this never gets called
-                    System.out.println("TEST2: Name: " + name);
-                    if(name.equals(device)){
-                        rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-
-                    }
-                    System.out.println("TEST3: " + rssi + " name: " + name);
-                }
-            }
-
-        };
-
-        // Device was not found
-        return -999;
-    }
-
+    /*
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void load() {
         FileInputStream fis = null;
@@ -155,4 +145,6 @@ public class AddEntry extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+   */
 }
