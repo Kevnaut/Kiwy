@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -100,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onRecive: " + device.getName() + " : " + device.getAddress());
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
+
+                int  rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                //Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
+
             }
         }
     };
@@ -110,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver1);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     mBluetoothAdapter.startDiscovery();
                     IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                     registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+
                 }
                 if(!mBluetoothAdapter.isDiscovering()){
 

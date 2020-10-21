@@ -1,15 +1,24 @@
 package com.example.kiwy;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import android.content.Intent;
+import android.content.IntentFilter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 public class LocateItem extends AppCompatActivity {
 
@@ -17,7 +26,39 @@ public class LocateItem extends AppCompatActivity {
     private TextView tDeviceNameBox;
     private TextView tDistance;
     private Button btFound;
-    //private
+    private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    private DeviceListAdapter mDeviceListAdapter;
+    private int deviceRssi;
+
+    //BEGIN Super dumb hacky way to repeatedly get RSSI
+    private final BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            //Toast.makeText(getApplicationContext()," onReceive: ACTION FOUND ", Toast.LENGTH_SHORT).show();
+            if(action.equals(BluetoothDevice.ACTION_FOUND)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                mBTDevices.add(device);
+                System.out.println( "TEST1: onRecive: " + device.getName() + " : " + device.getAddress());
+                mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
+
+                // if the found device is the same as the one found
+                if (device.getAddress().toString() == intent.getStringExtra("btDeviceAddress")){
+
+                    deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                    //Toast.makeText(getApplicationContext(),"  RSSI: " + deviceRssi + "dBm", Toast.LENGTH_SHORT).show();
+
+                }
+
+                deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                //Toast.makeText(getApplicationContext(),"  RSSI: " + deviceRssi + "dBm", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    };
+    //END Super dumb hacky way to repeatedly get RSSI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
