@@ -251,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
         btnTestPush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext()," TEST ", Toast.LENGTH_SHORT).show();
                 String message = "Device is now out of range";
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "BtDisconnected");
                 builder.setContentTitle("Warning");
