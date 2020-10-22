@@ -1,6 +1,8 @@
 package com.example.kiwy;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
 
@@ -29,12 +33,15 @@ public class MainActivity extends AppCompatActivity {
     Button btnONOFF;
     Button btnDiscoverDevices;
     Button btnLocateItem;
+
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView lvNewDevices;
 
-    // Create a BroadcastReceiver for ACTION_FOUND
+    // Testing Push Notificication
+    Button btnTestPush;
 
+    // Create a BroadcastReceiver for ACTION_STATE_CHANGED
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // Create a BroadcastReceiver for ACTION_SCAN_MODE_CHANGED
     private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -88,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-        private final BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
+    // Create a BroadcastReceiver for ACTION_FOUND
+    private final BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 lvNewDevices.setAdapter(mDeviceListAdapter);
 
                 int  rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-                //Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -114,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver1);
+        unregisterReceiver(mBroadcastReceiver2);
+        unregisterReceiver(mBroadcastReceiver3);
     }
 
 
@@ -128,10 +139,21 @@ public class MainActivity extends AppCompatActivity {
         // Initializing the buttons
         btnONOFF = (Button) findViewById(R.id.btnONOFF);
         btnLocateItem = (Button) findViewById(R.id.btnLocateItem);
-        btnEnableDisable_Discoverable = (Button) findViewById(R.id.btnEnableDisable_Discoverable);
+        //btnEnableDisable_Discoverable = (Button) findViewById(R.id.btnEnableDisable_Discoverable);
         btnDiscoverDevices = (Button) findViewById(R.id.btnDiscoverDevices);
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
+
+        // Testing Push Notification
+        btnTestPush = (Button) findViewById(R.id.btnTestPush);
+
+        if(mBluetoothAdapter.isEnabled() == true) {
+            btnONOFF.setText("Turn on Bluetooth");
+        }
+        else {
+            btnONOFF.setText("Turn off Bluetooth");
+        }
+
 
         // All onClick actions
 
@@ -157,15 +179,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: enabling/disabling bluetooth.");
 
-                if(mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_OFF){
+
+
+                if(mBluetoothAdapter.isEnabled() == true) {
                     btnONOFF.setText("Turn off Bluetooth");
-                } else if (mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_ON){
+                }
+                else {
                     btnONOFF.setText("Turn on Bluetooth");
                 }
                 enableDisableBT();
+
             }
         });
 
+        // For future use if we want to find other people with their phones
         /*
         btnEnableDisable_Discoverable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,6 +239,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        //Test push Notification
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("BtDisconnected", "BtDisconnected", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        btnTestPush.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext()," TEST ", Toast.LENGTH_SHORT).show();
+                String message = "Device is now out of range";
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "BtDisconnected");
+                builder.setContentTitle("Warning");
+                builder.setSmallIcon(R.drawable.ic_btdisconnected);
+                builder.setContentText(message);
+                builder.setAutoCancel(true);
+
+                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
+                managerCompat.notify(1,builder.build());
+            }
+        });
     }
 
     public void enableDisableBT(){
@@ -235,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
@@ -255,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("btDevice", device);
         startActivity(intent);
     }
+
     public void openLocateItem() {
         Intent intent = new Intent(this, LocateItem.class);
         startActivity(intent);
