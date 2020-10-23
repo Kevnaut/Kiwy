@@ -148,6 +148,7 @@ public class LocateItem extends AppCompatActivity {
         };
 
           connectDevice(device, callback);
+        Toast.makeText(getApplicationContext()," Connected to Device ", Toast.LENGTH_SHORT).show();
 
  //       Toast.makeText(getApplicationContext(),"  RSSI attempt 2: " + deviceRssi + "dBm", Toast.LENGTH_SHORT).show();
 
