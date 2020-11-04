@@ -34,7 +34,7 @@ public class AddEntry extends AppCompatActivity {
     private KiwyBroadcastReceiver receiver;
     public static final String TAG = "AddEntry";
 
-    private int deviceRssi;
+    private String deviceRssi;
 
     public static final String FILE_NAME = "SavedDevices.csv";
 
@@ -56,12 +56,14 @@ public class AddEntry extends AppCompatActivity {
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
 
         // Set up selected Bluetooth device
-        device = intent.getExtras().getParcelable("btDevice");
+        //device = intent.getExtras().getParcelable("btDevice");
+        //btName = device.getName();
+        //btAddress = device.getAddress();
 
-        btName = device.getName();
-        btAddress = device.getAddress();
+        btName = intent.getStringExtra("btName");
+        btAddress = intent.getStringExtra("btAddress");
 
-        deviceRssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+        deviceRssi = intent.getStringExtra("btRSSI");
         Log.d(TAG, "RSSI: " + deviceRssi);
 
         // Set up adapter and reciver to get signal strenth
@@ -71,14 +73,13 @@ public class AddEntry extends AppCompatActivity {
         // Set text for selected Bluetooth device
         tDevice.setText(btName);
         tAddress.setText(btAddress);
-        txSignalNum.setText("Refresh");
+        txSignalNum.setText(deviceRssi + " dBm");
+        //txSignalNum.setText("Refresh");
 
 
         btAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 save();
             }
         });
@@ -104,6 +105,17 @@ public class AddEntry extends AppCompatActivity {
                 adapter.startDiscovery();
                 IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 registerReceiver(receiver, discoverIntent);
+
+                deviceRssi = MainActivity.getCapturedRSSI(btAddress);
+
+                /*
+                    TODO
+                    Periodiclly refresh the rssi
+                    wait 5 second intervals
+                    after 5 seconds update devicesRSSI
+
+
+                 */
 
                 txSignalNum.setText(deviceRssi + " dBm");
 

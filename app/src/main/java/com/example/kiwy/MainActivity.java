@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -25,6 +24,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -32,7 +32,13 @@ public class MainActivity extends AppCompatActivity {
     private String desiredAddress;
 
     BluetoothAdapter mBluetoothAdapter;
-    Button btnEnableDisable_Discoverable;
+
+    // BTName, BTAddr
+    HashMap<String,String> capturedDevices = new HashMap<String, String>();
+    // BTAddr, BTRSSI
+    static HashMap<String,String> capturedRSSI = new HashMap<String,String>();
+
+    //Button btnEnableDisable_Discoverable;
     Button btnONOFF;
     Button btnDiscoverDevices;
     Button btnLocateItem;
@@ -112,9 +118,12 @@ public class MainActivity extends AppCompatActivity {
                 mBTDevices.add(device);
                 Log.d(TAG, "onRecive: " + device.getName() + " : " + device.getAddress());
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                lvNewDevices.setAdapter(mDeviceListAdapter);
 
+                capturedDevices.put(device.getName(),device.getAddress());
                 rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                String s = "" + rssi;
+                capturedRSSI.put(device.getAddress(),s);
+                lvNewDevices.setAdapter(mDeviceListAdapter);
                 Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
 
             }
@@ -183,8 +192,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: enabling/disabling bluetooth.");
-
-
 
                 if(mBluetoothAdapter.isEnabled() == true) {
                     btnONOFF.setText("Turn off Bluetooth");
@@ -309,21 +316,23 @@ public class MainActivity extends AppCompatActivity {
     public void openAddEntry(BluetoothDevice device) {
         Intent intent = new Intent(this, AddEntry.class);
 
-
-        /*
-        //TODO connect to device here?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            connectToDevice(device);
-        }
-         */
+        // Send bt name, address, current rssi
 
         intent.putExtra("btDevice", device);
+        intent.putExtra("btName", device.getName());
+        intent.putExtra("btAddress", device.getAddress());
+        String currentRssi = capturedRSSI.get(device.getAddress());
+        intent.putExtra("btRSSI",currentRssi);
         startActivity(intent);
     }
 
     public void openLocateItem() {
         Intent intent = new Intent(this, LocateItem.class);
         startActivity(intent);
+    }
+
+    public static String getCapturedRSSI(String address){
+        return capturedRSSI.get(address);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
