@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 String s = "" + rssi;
                 capturedRSSI.put(device.getAddress(),s);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
-                Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
 
             }
         }

@@ -136,7 +136,7 @@ public class AddEntry extends AppCompatActivity {
         Intent intent = new Intent(this, LocateItem.class);
         intent.putExtra("btDeviceName", btName);
         intent.putExtra("btDeviceAddress", btAddress);
-        intent.putExtra("btDevice", device);
+        //intent.putExtra("btDevice", device);
         startActivity(intent);
 
     }
