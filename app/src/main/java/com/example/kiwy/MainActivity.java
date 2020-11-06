@@ -33,9 +33,9 @@ public class MainActivity extends AppCompatActivity {
     BluetoothAdapter mBluetoothAdapter;
 
     // BTName, BTAddr
-    HashMap<String,String> capturedDevices = new HashMap<String, String>();
+    HashMap<String, String> capturedDevices = new HashMap<String, String>();
     // BTAddr, BTRSSI
-    static HashMap<String,String> capturedRSSI = new HashMap<String,String>();
+    static HashMap<String, String> capturedRSSI = new HashMap<String, String>();
 
     //Button btnEnableDisable_Discoverable;
     Button btnONOFF;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
 
-                switch(state){
+                switch (state) {
                     case BluetoothAdapter.STATE_OFF:
                         Log.d(TAG, "onReceive: STATE OFF");
                         break;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             if (action.equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
                 int mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
 
-                switch(mode){
+                switch (mode) {
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
                         Log.d(TAG, "mBroadcastReceiver2: Discoverability Enabled");
                         break;
@@ -110,19 +110,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            capturedDevices = new HashMap<String,String>();
+            capturedDevices = new HashMap<String, String>();
             Log.d(TAG, "onReceive: ACTION FOUND");
-            if(action.equals(BluetoothDevice.ACTION_FOUND)) {
+            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 mBTDevices.add(device);
                 Log.d(TAG, "onRecive: " + device.getName() + " : " + device.getAddress());
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
 
-                capturedDevices.put(device.getName(),device.getAddress());
-                rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                capturedDevices.put(device.getName(), device.getAddress());
+                rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
                 String s = "" + rssi;
-                capturedRSSI.put(device.getAddress(),s);
+                capturedRSSI.put(device.getAddress(), s);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
             }
         }
@@ -157,10 +157,9 @@ public class MainActivity extends AppCompatActivity {
         // Testing Push Notification
         btnTestPush = (Button) findViewById(R.id.btnTestPush);
 
-        if(mBluetoothAdapter.isEnabled() == true) {
+        if (mBluetoothAdapter.isEnabled() == true) {
             btnONOFF.setText("Turn on Bluetooth");
-        }
-        else {
+        } else {
             btnONOFF.setText("Turn off Bluetooth");
         }
 
@@ -191,10 +190,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: enabling/disabling bluetooth.");
 
-                if(mBluetoothAdapter.isEnabled() == true) {
+                if (mBluetoothAdapter.isEnabled() == true) {
                     btnONOFF.setText("Turn off Bluetooth");
-                }
-                else {
+                } else {
                     btnONOFF.setText("Turn on Bluetooth");
                 }
                 enableDisableBT();
@@ -228,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 mBTDevices.clear();
                 Log.d(TAG, "onClick: Looking for unpaird devices");
 
-                if(mBluetoothAdapter.isDiscovering()) {
+                if (mBluetoothAdapter.isDiscovering()) {
                     mBluetoothAdapter.cancelDiscovery();
                     Log.d(TAG, "onClick: Canceling discovery");
 
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
 
                 }
-                if(!mBluetoothAdapter.isDiscovering()){
+                if (!mBluetoothAdapter.isDiscovering()) {
 
                     checkBTPermissions();
 
@@ -251,34 +249,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //Test push Notification
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("BtDisconnected", "BtDisconnected", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
+
 
         btnTestPush.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = "Device is now out of range";
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "BtDisconnected");
-                builder.setContentTitle("Warning");
-                builder.setSmallIcon(R.drawable.ic_btdisconnected);
-                builder.setContentText(message);
-                builder.setAutoCancel(true);
-
-                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
-                managerCompat.notify(1,builder.build());
+                pushNotification();
             }
         });
     }
 
-    public void enableDisableBT(){
-        if(mBluetoothAdapter == null){
+    public void enableDisableBT() {
+        if (mBluetoothAdapter == null) {
             Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
         }
-        if(!mBluetoothAdapter.isEnabled()){
+        if (!mBluetoothAdapter.isEnabled()) {
             Log.d(TAG, "enableDisableBT: enabling BT.");
             Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBTIntent);
@@ -286,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
             IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             registerReceiver(mBroadcastReceiver1, BTIntent);
         }
-        if(mBluetoothAdapter.isEnabled()){
+        if (mBluetoothAdapter.isEnabled()) {
             Log.d(TAG, "enableDisableBT: disabling BT.");
             mBluetoothAdapter.disable();
 
@@ -298,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkBTPermissions() {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
 
             permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
@@ -306,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
 
                 this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
             }
-        }else{
+        } else {
             Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }
     }
@@ -320,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("btName", device.getName());
         intent.putExtra("btAddress", device.getAddress());
         String currentRssi = capturedRSSI.get(device.getAddress());
-        intent.putExtra("btRSSI",currentRssi);
+        intent.putExtra("btRSSI", currentRssi);
         startActivity(intent);
     }
 
@@ -329,10 +314,31 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public static String getCapturedRSSI(String address){
+    public static String getCapturedRSSI(String address) {
 
         return capturedRSSI.get(address);
     }
+
+    public void pushNotification() {
+
+        //Test push Notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("BtDisconnected", "BtDisconnected", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+
+            String message = "Device is now out of range";
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "BtDisconnected");
+            builder.setContentTitle("Warning");
+            builder.setSmallIcon(R.drawable.ic_btdisconnected);
+            builder.setContentText(message);
+            builder.setAutoCancel(true);
+
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
+            managerCompat.notify(1, builder.build());
+        }
+
     }
+}
 
 

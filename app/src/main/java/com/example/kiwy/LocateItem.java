@@ -1,5 +1,7 @@
 package com.example.kiwy;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -73,6 +77,9 @@ public class LocateItem extends AppCompatActivity {
 
                 deviceRssi = MainActivity.getCapturedRSSI(btAddress);
 
+                //HEY SETH I HOPE YOU ENJOY FINDING WHY ITS DINGING EVERY THREE SECONDS ;P
+                pushNotification();
+
                 IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 registerReceiver(receiver, discoverIntent);
 
@@ -132,6 +139,27 @@ public class LocateItem extends AppCompatActivity {
     public void returnToMainMenu() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    public void pushNotification() {
+
+        //Test push Notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("BtDisconnected", "BtDisconnected", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+
+            String message = "Device is now out of range";
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(LocateItem.this, "BtDisconnected");
+            builder.setContentTitle("Warning");
+            builder.setSmallIcon(R.drawable.ic_btdisconnected);
+            builder.setContentText(message);
+            builder.setAutoCancel(true);
+
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(LocateItem.this);
+            managerCompat.notify(1, builder.build());
+        }
+
     }
 
 }
