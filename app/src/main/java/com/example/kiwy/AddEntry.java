@@ -48,17 +48,12 @@ public class AddEntry extends AppCompatActivity {
         // Set the buttons
         tDevice = (TextView) findViewById(R.id.tDevice);
         tAddress = (TextView) findViewById(R.id.tAddress);
-        btAddDevice = (Button) findViewById(R.id.btAddDevice);
+        btAddDevice = (Button) findViewById(R.id.btLocateDevice);
         btChangeName = (Button) findViewById(R.id.btChangeName);
         inName = (EditText) findViewById(R.id.inName);
         txSignal = (TextView) findViewById(R.id.txSignal);
         txSignalNum = (TextView) findViewById(R.id.txSignalNum);
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
-
-        // Set up selected Bluetooth device
-        //device = intent.getExtras().getParcelable("btDevice");
-        //btName = device.getName();
-        //btAddress = device.getAddress();
 
         btName = intent.getStringExtra("btName");
         btAddress = intent.getStringExtra("btAddress");
@@ -74,7 +69,6 @@ public class AddEntry extends AppCompatActivity {
         tDevice.setText(btName);
         tAddress.setText(btAddress);
         txSignalNum.setText(deviceRssi + " dBm");
-        //txSignalNum.setText("Refresh");
 
 
         btAddDevice.setOnClickListener(new View.OnClickListener() {
@@ -108,15 +102,6 @@ public class AddEntry extends AppCompatActivity {
 
                 deviceRssi = MainActivity.getCapturedRSSI(btAddress);
 
-                /*
-                    TODO
-                    Periodiclly refresh the rssi
-                    wait 5 second intervals
-                    after 5 seconds update devicesRSSI
-
-
-                 */
-
                 txSignalNum.setText(deviceRssi + " dBm");
 
 
@@ -136,7 +121,6 @@ public class AddEntry extends AppCompatActivity {
         Intent intent = new Intent(this, LocateItem.class);
         intent.putExtra("btDeviceName", btName);
         intent.putExtra("btDeviceAddress", btAddress);
-        //intent.putExtra("btDevice", device);
         startActivity(intent);
 
     }

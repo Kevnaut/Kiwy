@@ -73,13 +73,13 @@
         tools:layout_editor_absoluteX="36dp" />
 
     <Button
-        android:id="@+id/btAddDevice"
+        android:id="@+id/btLocateDevice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginLeft="36dp"
         android:layout_marginTop="24dp"
-        android:text="Save Device"
+        android:text="Locate Device"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btChangeName" />
 

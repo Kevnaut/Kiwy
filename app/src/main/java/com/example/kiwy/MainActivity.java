@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -111,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            capturedDevices = new HashMap<String,String>();
             Log.d(TAG, "onReceive: ACTION FOUND");
             if(action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -124,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 String s = "" + rssi;
                 capturedRSSI.put(device.getAddress(),s);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
-                //Toast.makeText(getApplicationContext(),"  RSSI: " + rssi + "dBm", Toast.LENGTH_SHORT).show();
-
             }
         }
     };
@@ -332,45 +330,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static String getCapturedRSSI(String address){
+
         return capturedRSSI.get(address);
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void connectToDevice(BluetoothDevice device) {
-
-        try {
-            Log.d(TAG, "Start Pairing... with: " + device.getName());
-            device.createBond();
-            Log.d(TAG, "Pairing finished.");
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        /*
-        Log.d(TAG, "Bluetooth bonding with device. ");
-        boolean outcome = false;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            outcome = device.createBond();
-        }
-
-        System.out.println("TEST: Bounding outcome : " + outcome);
-
-        // If the outcome is true, we are bounding with this device.
-        if (outcome == true) {
-            //this.boundingDevice = device;
-            System.out.println("TEST: bound");
-
-            //rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-
-            android.widget.Toast.makeText(getApplicationContext()," INSIDE ADD DEVICE RSSI: " + rssi + "dBm", android.widget.Toast.LENGTH_SHORT).show();
-        }
-
-         */
-
-
-
     }
 
 
-}

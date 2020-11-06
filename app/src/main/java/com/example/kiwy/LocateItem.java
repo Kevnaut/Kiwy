@@ -2,35 +2,21 @@ package com.example.kiwy;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import android.content.Intent;
-import android.content.IntentFilter;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class LocateItem extends AppCompatActivity {
 
@@ -45,11 +31,6 @@ public class LocateItem extends AppCompatActivity {
     private String btAddress;
     private int count;
 
-    //private BluetoothGattCallback callback;
-    private int status;
-    //    private DeviceListAdapter mDeviceListAdapter;
- //   private BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-  //  private KiwyBroadcastReceiver receiver;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
@@ -70,9 +51,9 @@ public class LocateItem extends AppCompatActivity {
         receiver = new KiwyBroadcastReceiver(device);
         btAddress = intent.getStringExtra("btDeviceAddress");
 
-        btFound.setOnClickListener(new View.OnClickListener(){ //go back to main menu
+        btFound.setOnClickListener(new View.OnClickListener() { //go back to main menu
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 returnToMainMenu();
             }
         });
@@ -90,7 +71,7 @@ public class LocateItem extends AppCompatActivity {
                 }
                 adapter.startDiscovery();
 
-                deviceRssi =  MainActivity.getCapturedRSSI(btAddress);
+                deviceRssi = MainActivity.getCapturedRSSI(btAddress);
 
                 IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 registerReceiver(receiver, discoverIntent);
@@ -106,7 +87,7 @@ public class LocateItem extends AppCompatActivity {
 
     }
 
-    private void updateDistance(){
+    private void updateDistance() {
 
         //TODO convert rssi to distance
 
@@ -115,7 +96,7 @@ public class LocateItem extends AppCompatActivity {
         }
         adapter.startDiscovery();
 
-        deviceRssi =  MainActivity.getCapturedRSSI(btAddress);
+        deviceRssi = MainActivity.getCapturedRSSI(btAddress);
 
         IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, discoverIntent);
@@ -126,16 +107,16 @@ public class LocateItem extends AppCompatActivity {
 
     // accepts distance in terms of feet
     // if unit is not type feet it will convert it the the appropriate type
-    public void setDistanceReadout(double distance, String Units){
+    public void setDistanceReadout(double distance, String Units) {
 
         String UnitAbbreviation;
         double calculatedDistance = distance;
 
-        if(Units == "feet"){
+        if (Units == "feet") {
             UnitAbbreviation = " ft.";
-        } else if (Units == "meters" ) {
+        } else if (Units == "meters") {
             //convert to meters with only 1 decimal place
-            calculatedDistance = BigDecimal.valueOf(distance/3.28)
+            calculatedDistance = BigDecimal.valueOf(distance / 3.28)
                     .setScale(1, RoundingMode.HALF_UP)
                     .doubleValue();
             UnitAbbreviation = " M";
@@ -147,17 +128,8 @@ public class LocateItem extends AppCompatActivity {
 
     }
 
-    //TODO
-    //returns the direction in degrees
-    /*
-    private int findDirection(){
-        int ret;
 
-        return ret;
-    }
-    */
-
-    public void returnToMainMenu(){
+    public void returnToMainMenu() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
