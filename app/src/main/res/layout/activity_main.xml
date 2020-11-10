@@ -8,68 +8,79 @@
 
     <Button
         android:id="@+id/btnDiscoverDevices"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="93dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="8dp"
         android:text="Discover"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLocateItem" />
 
     <Button
         android:id="@+id/btnLocateItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="114dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="60dp"
         android:text="Locate Item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnONOFF" />
 
     <Button
         android:id="@+id/btnONOFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="161dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/lvNewDevices"
-        android:layout_width="414dp"
-        android:layout_height="366dp"
+        android:layout_width="413dp"
+        android:layout_height="137dp"
         android:layout_marginTop="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDiscoverDevices"
-        app:layout_constraintVertical_bias="0.033"
-        tools:layout_editor_absoluteX="-2dp">
+        app:layout_constraintVertical_bias="0.0">
 
     </ListView>
 
     <Button
         android:id="@+id/btnTestPush"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="158dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="152dp"
         android:text="Push Notification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnONOFF"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tx1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginRight="28dp"
-        android:text="For Demonstration only"
+        android:id="@+id/textView"
+        android:layout_width="182dp"
+        android:layout_height="26dp"
+        android:text="The app that finds it for you!"
+        app:layout_constraintBottom_toTopOf="@+id/btnONOFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnTestPush" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        style="@android:style/Widget.DeviceDefault.Light.Button.Borderless.Small"
+        android:layout_width="66dp"
+        android:layout_height="38dp"
+        android:text="Help"
+        tools:layout_editor_absoluteX="340dp"
+        tools:layout_editor_absoluteY="690dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
