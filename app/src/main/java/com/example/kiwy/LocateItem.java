@@ -66,7 +66,6 @@ public class LocateItem extends AppCompatActivity {
         t.scheduleAtFixedRate(new TimerTask() {
 
             public void run() {
-                //updateDistance();
                 if (adapter.isDiscovering()) {
                     adapter.cancelDiscovery();
                 }
@@ -74,64 +73,36 @@ public class LocateItem extends AppCompatActivity {
 
                 deviceRssi =  MainActivity.getCapturedRSSI(btAddress);
 
-                final double distance = convertRSSIToDist(Integer.parseInt(deviceRssi));
+                double distance = convertRSSIToDist(Integer.parseInt(deviceRssi));
 
                 //out of range
                 if(distance == -1){
                     pushNotification();
                 }
 
+                if (units.equals("ft")) {
+                    distance = distance*3.28;
+                    //1 decimal place
+                    distance = Math.round(distance * 10)*1.0/10;
+                } else {
+                    //2 decimal places
+                    distance = Math.round(distance * 100)*1.0/100;
+                }
+
                 IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 registerReceiver(receiver, discoverIntent);
 
+                //Convert to final b/c Java enforces thread safety here.
+                final double finalDistance = distance;
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        tDistance.setText(distance + "m");
+                        tDistance.setText(String.format("%d %s", finalDistance, units));
                     }
                 });
             }
         }, 0, 3000);
 
     }
-
-    private void updateDistance(){
-
-        if (adapter.isDiscovering()) {
-            adapter.cancelDiscovery();
-        }
-        adapter.startDiscovery();
-
-        deviceRssi =  MainActivity.getCapturedRSSI(btAddress);
-
-        double distance = convertRSSIToDist(Integer.parseInt(deviceRssi));
-
-        //out of range
-        if(distance == -1){
-            pushNotification();
-        }
-
-        if (units.equals("ft")) {
-            distance = distance*3.28;
-            //1 decimal place
-            distance = Math.round(distance * 10)*1.0/10;
-        } else {
-            //2 decimal places
-            distance = Math.round(distance * 100)*1.0/100;
-        }
-
-        IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(receiver, discoverIntent);
-
-        //Convert to final b/c Java enforces thread safety here.
-        final double finalDistance = distance;
-        runOnUiThread(new Runnable() {
-            public void run() {
-                tDistance.setText(String.format("%d %s", finalDistance, units));
-            }
-        });
-
-    }
-
 
     /*
         Converts a given RSSI value to a distance of the given unit.
