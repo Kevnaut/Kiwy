@@ -80,6 +80,7 @@ public class LocateItem extends AppCompatActivity {
                     pushNotification();
                 }
 
+
                 if (units.equals("ft")) {
                     distance = distance*3.28;
                     //1 decimal place
@@ -89,14 +90,21 @@ public class LocateItem extends AppCompatActivity {
                     distance = Math.round(distance * 100)*1.0/100;
                 }
 
+
+
+                // Fix out of range range...
+
+
+
                 IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 registerReceiver(receiver, discoverIntent);
 
                 //Convert to final b/c Java enforces thread safety here.
                 final double finalDistance = distance;
+
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        tDistance.setText(String.format("%d %s", finalDistance, units));
+                        tDistance.setText("" + finalDistance + " " + units);
                     }
                 });
             }

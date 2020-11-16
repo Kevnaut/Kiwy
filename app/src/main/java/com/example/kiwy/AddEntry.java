@@ -74,7 +74,7 @@ public class AddEntry extends AppCompatActivity {
         btAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                save();
+                locateItem();
             }
         });
 
@@ -117,7 +117,7 @@ public class AddEntry extends AppCompatActivity {
         unregisterReceiver(receiver);
     }
 
-    public void save() {
+    public void locateItem() {
         Intent intent = new Intent(this, LocateItem.class);
         intent.putExtra("btDeviceName", btName);
         intent.putExtra("btDeviceAddress", btAddress);
