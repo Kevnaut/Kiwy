@@ -54,33 +54,34 @@
 
     <EditText
         android:id="@+id/inName"
-        android:layout_width="210dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="186dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="232dp"
         android:ems="10"
         android:hint="Insert Name here"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.578"
         app:layout_constraintStart_toEndOf="@+id/btChangeName"
-        app:layout_constraintTop_toBottomOf="@+id/btnRefresh" />
+        app:layout_constraintTop_toBottomOf="@+id/tAddress" />
 
     <Button
         android:id="@+id/btChangeName"
         android:layout_width="127dp"
         android:layout_height="37dp"
-        android:layout_marginTop="220dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="164dp"
         android:text="Change Name"
-        app:layout_constraintTop_toBottomOf="@+id/txSignalNum"
-        tools:layout_editor_absoluteX="36dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txSignalNum" />
 
     <Button
         android:id="@+id/btLocateDevice"
         android:layout_width="126dp"
         android:layout_height="38dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="16dp"
         android:text="Locate Device"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btChangeName" />
@@ -112,10 +113,12 @@
         android:id="@+id/btnRefresh"
         android:layout_width="94dp"
         android:layout_height="36dp"
-        android:layout_marginStart="192dp"
-        android:layout_marginLeft="192dp"
-        android:layout_marginTop="188dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginTop="252dp"
         android:text="Refresh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/txSignalNum"
         app:layout_constraintTop_toBottomOf="@+id/txSignal" />
 
