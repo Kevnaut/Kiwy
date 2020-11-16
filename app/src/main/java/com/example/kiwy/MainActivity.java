@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     //Button btnEnableDisable_Discoverable;
     Button btnONOFF;
     Button btnDiscoverDevices;
-    Button btnLocateItem;
+    //Button btnLocateItem;
+    Button btnHelp;
 
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         btnDiscoverDevices = (Button) findViewById(R.id.btnDiscoverDevices);
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
+        btnHelp = (Button) findViewById(R.id.btnHelp);
 
 
 
@@ -164,6 +166,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         // All onClick actions
+
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openHelp();
+            }
+        });
 
         lvNewDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -291,11 +300,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openHelp() {
+        Intent intent = new Intent(this, Help.class);
+        startActivity(intent);
+    }
+/*
     public void openLocateItem() {
         Intent intent = new Intent(this, LocateItem.class);
         startActivity(intent);
     }
-
+*/
     public static String getCapturedRSSI(String address) {
 
         return capturedRSSI.get(address);
