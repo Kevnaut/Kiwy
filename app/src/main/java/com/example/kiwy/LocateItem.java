@@ -5,20 +5,18 @@ import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.content.IntentFilter;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,7 +31,8 @@ public class LocateItem extends AppCompatActivity {
     private KiwyBroadcastReceiver receiver;
     private BluetoothDevice device;
     private String btAddress;
-    private int count;
+    //options are "ft" and "m" for feet and meters respectively
+    private final String units = "ft";
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -55,9 +54,9 @@ public class LocateItem extends AppCompatActivity {
         receiver = new KiwyBroadcastReceiver(device);
         btAddress = intent.getStringExtra("btDeviceAddress");
 
-        btFound.setOnClickListener(new View.OnClickListener() { //go back to main menu
+        btFound.setOnClickListener(new View.OnClickListener(){ //go back to main menu
             @Override
-            public void onClick(View view) {
+            public void onClick(View view){
                 returnToMainMenu();
             }
         });
@@ -67,83 +66,88 @@ public class LocateItem extends AppCompatActivity {
         t.scheduleAtFixedRate(new TimerTask() {
 
             public void run() {
-                //TODO convert rssi to distance
-                System.out.println("DEBUG: run");
-
                 if (adapter.isDiscovering()) {
                     adapter.cancelDiscovery();
                 }
                 adapter.startDiscovery();
 
-                deviceRssi = MainActivity.getCapturedRSSI(btAddress);
+                deviceRssi =  MainActivity.getCapturedRSSI(btAddress);
 
-                //HEY SETH I HOPE YOU ENJOY FINDING WHY ITS DINGING EVERY THREE SECONDS ;P
-                pushNotification();
+                double distance = convertRSSIToDist(Integer.parseInt(deviceRssi));
+
+                //out of range
+                if(distance == -1){
+                    pushNotification();
+                }
+
+
+                if (units.equals("ft")) {
+                    distance = distance*3.28;
+                    //1 decimal place
+                    distance = Math.round(distance * 10)*1.0/10;
+                } else {
+                    //2 decimal places
+                    distance = Math.round(distance * 100)*1.0/100;
+                }
+
+
+
+                // Fix out of range range...
+
+
 
                 IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 registerReceiver(receiver, discoverIntent);
 
+                //Convert to final b/c Java enforces thread safety here.
+                final double finalDistance = distance;
+
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        tDistance.setText(deviceRssi + " dBm");
+                        tDistance.setText("" + finalDistance + " " + units);
                     }
                 });
-
             }
         }, 0, 3000);
 
     }
 
-    private void updateDistance() {
+    /*
+        Converts a given RSSI value to a distance of the given unit.
+        Code adapted from https://gist.github.com/eklimcz/446b56c0cb9cfe61d575
+        For a more formal math equation and explanation read
+        https://iotandelectronics.wordpress.com/2016/10/07/how-to-calculate-distance-from-the-rssi-value-of-the-ble-beacon/
+        rssi: the rssi value of the device
+        returns: double value representing the disance in meters. -1 if out of range
+     */
+    double convertRSSIToDist(int rssi){
 
-        //TODO convert rssi to distance
+        //There may be a way to get this from Gatt, but for now it's
+        //hardcoded as a typical bluetooth power level (-59 to -65 is the typical value)
+        final int transmitterPowerLevel = -59;
 
-        if (adapter.isDiscovering()) {
-            adapter.cancelDiscovery();
+        //Device out of range
+        if(rssi == 0 || rssi == Short.MIN_VALUE){
+            return -1;
         }
-        adapter.startDiscovery();
 
-        deviceRssi = MainActivity.getCapturedRSSI(btAddress);
+        double ratio = rssi * 1.0/transmitterPowerLevel;
 
-        IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(receiver, discoverIntent);
+        if(ratio < 1) {
+            return Math.pow(ratio,10);
+        }
 
-        tDistance.setText(deviceRssi + " dBm");
+        return (0.89976)*Math.pow(ratio,7.7095) + 0.111;
 
     }
 
-    // accepts distance in terms of feet
-    // if unit is not type feet it will convert it the the appropriate type
-    public void setDistanceReadout(double distance, String Units) {
-
-        String UnitAbbreviation;
-        double calculatedDistance = distance;
-
-        if (Units == "feet") {
-            UnitAbbreviation = " ft.";
-        } else if (Units == "meters") {
-            //convert to meters with only 1 decimal place
-            calculatedDistance = BigDecimal.valueOf(distance / 3.28)
-                    .setScale(1, RoundingMode.HALF_UP)
-                    .doubleValue();
-            UnitAbbreviation = " M";
-        } else {
-            UnitAbbreviation = " unknown units";
-        }
-
-        tDistance.setText(String.valueOf(calculatedDistance) + UnitAbbreviation);
-
-    }
-
-
-    public void returnToMainMenu() {
+    public void returnToMainMenu(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
     public void pushNotification() {
 
-        //Test push Notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("BtDisconnected", "BtDisconnected", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
