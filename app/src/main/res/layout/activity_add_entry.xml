@@ -12,8 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginLeft="64dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="140dp"
         android:text="Device"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,10 +22,11 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="140dp"
         android:layout_marginEnd="68dp"
         android:layout_marginRight="68dp"
         android:text="Address"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,20 +56,20 @@
         android:id="@+id/inName"
         android:layout_width="210dp"
         android:layout_height="38dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Insert Name here"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.619"
+        app:layout_constraintHorizontal_bias="0.578"
         app:layout_constraintStart_toEndOf="@+id/btChangeName"
         app:layout_constraintTop_toBottomOf="@+id/btnRefresh" />
 
     <Button
         android:id="@+id/btChangeName"
-        android:layout_width="128dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="72dp"
+        android:layout_width="127dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="220dp"
         android:text="Change Name"
         app:layout_constraintTop_toBottomOf="@+id/txSignalNum"
         tools:layout_editor_absoluteX="36dp" />
@@ -78,7 +80,7 @@
         android:layout_height="38dp"
         android:layout_marginStart="36dp"
         android:layout_marginLeft="36dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="36dp"
         android:text="Locate Device"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btChangeName" />
@@ -91,6 +93,7 @@
         android:layout_marginLeft="64dp"
         android:layout_marginTop="16dp"
         android:text="Signal Strength"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tDevice" />
 
@@ -109,9 +112,9 @@
         android:id="@+id/btnRefresh"
         android:layout_width="94dp"
         android:layout_height="36dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="192dp"
+        android:layout_marginLeft="192dp"
+        android:layout_marginTop="188dp"
         android:text="Refresh"
         app:layout_constraintStart_toEndOf="@+id/txSignalNum"
         app:layout_constraintTop_toBottomOf="@+id/txSignal" />
