@@ -148,14 +148,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Initializing the buttons
         btnONOFF = (Button) findViewById(R.id.btnONOFF);
-        btnLocateItem = (Button) findViewById(R.id.btnLocateItem);
         //btnEnableDisable_Discoverable = (Button) findViewById(R.id.btnEnableDisable_Discoverable);
         btnDiscoverDevices = (Button) findViewById(R.id.btnDiscoverDevices);
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
 
-        // Testing Push Notification
-        btnTestPush = (Button) findViewById(R.id.btnTestPush);
+
+
 
         if (mBluetoothAdapter.isEnabled() == true) {
             btnONOFF.setText("Turn on Bluetooth");
@@ -165,15 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         // All onClick actions
-
-        btnLocateItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                openLocateItem();
-
-            }
-        });
 
         lvNewDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -249,14 +239,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-        btnTestPush.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pushNotification();
-            }
-        });
     }
 
     public void enableDisableBT() {
