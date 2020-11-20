@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +31,6 @@ public class AddEntry extends AppCompatActivity {
     private BluetoothDevice device;
     private BluetoothAdapter adapter;
     private KiwyBroadcastReceiver receiver;
-    public static final String TAG = "AddEntry";
 
     private String deviceRssi;
 
@@ -59,7 +57,7 @@ public class AddEntry extends AppCompatActivity {
         btAddress = intent.getStringExtra("btAddress");
 
         deviceRssi = intent.getStringExtra("btRSSI");
-        Log.d(TAG, "RSSI: " + deviceRssi);
+
 
         // Set up adapter and reciver to get signal strenth
         adapter = BluetoothAdapter.getDefaultAdapter();

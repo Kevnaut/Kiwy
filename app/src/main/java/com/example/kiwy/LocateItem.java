@@ -124,7 +124,7 @@ public class LocateItem extends AppCompatActivity {
 
         //There may be a way to get this from Gatt, but for now it's
         //hardcoded as a typical bluetooth power level (-59 to -65 is the typical value)
-        final int transmitterPowerLevel = -59;
+        final int transmitterPowerLevel = -60;
 
         //Device out of range
         if(rssi == 0 || rssi == Short.MIN_VALUE){
